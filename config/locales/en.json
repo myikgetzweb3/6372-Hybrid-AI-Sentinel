@@ -1,0 +1,18 @@
+{
+  "system_status": "System Status",
+  "active": "ACTIVE",
+  "inactive": "INACTIVE",
+  "last_update": "Last UI Update",
+  "market_radar": "MARKET RADAR",
+  "stable": "STABLE",
+  "ai_registry": "AI AGENT REGISTRY",
+  "local_ai": "LOCAL",
+  "online_ai": "ONLINE",
+  "ready": "READY",
+  "offline": "OFFLINE",
+  "data_inflow": "DATA INFLOW CHANNELS",
+  "quick_nav": "QUICK NAV",
+  "command_label": "COMMAND",
+  "press_key_cmd": "Press [/] for Commands",
+  "exit_msg": "Closing 6372 Sentinel..."
+}

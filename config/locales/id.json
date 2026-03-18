@@ -1,0 +1,18 @@
+{
+  "system_status": "Status Sistem",
+  "active": "AKTIF",
+  "inactive": "NONAKTIF",
+  "last_update": "Pembaruan Terakhir",
+  "market_radar": "RADAR PASAR (REAL-TIME)",
+  "stable": "STABIL",
+  "ai_registry": "REGISTRASI AGEN AI",
+  "local_ai": "LOKAL",
+  "online_ai": "ONLINE",
+  "ready": "SIAGA",
+  "offline": "OFFLINE",
+  "data_inflow": "SALURAN DATA MASUK",
+  "quick_nav": "NAVIGASI CEPAT",
+  "command_label": "PERINTAH",
+  "press_key_cmd": "Tekan [/] untuk Perintah",
+  "exit_msg": "Menutup 6372 Sentinel..."
+}

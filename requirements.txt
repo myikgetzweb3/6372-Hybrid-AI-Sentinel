@@ -1,0 +1,9 @@
+# 6372 HYBRID AI SENTINEL - Dependencies
+requests
+python-dotenv
+psutil
+plyer
+feedparser
+websocket-client
+google-generativeai
+urllib3

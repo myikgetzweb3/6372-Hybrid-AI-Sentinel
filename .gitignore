@@ -1,0 +1,32 @@
+# 🛡️ 6372-Hybrid-AI-Sentinel Security Filter
+
+# --- SENSITIVE DATA (DO NOT UPLOAD) ---
+.env
+data/*.db
+data/*.sqlite
+config/settings.json
+
+# --- SYSTEM & LOGS ---
+*.log
+*.old
+activity.log
+state.json
+6372-sentinel.service
+
+# --- PYTHON ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+.env/
+
+# --- IDE ---
+.vscode/
+.idea/
+.project
+.settings/
+*.swp
+*.save

@@ -1,0 +1,38 @@
+{
+  "user_strategy": {
+    "type": "DCA",
+    "interval": "monthly",
+    "execution_day": 1,
+    "execution_time": "09:00",
+    "reminder_msg": "Time for monthly DCA!"
+  },
+  "assets": {
+    "BTC": {
+      "symbol": "BTCUSDT",
+      "emoji": "₿ ",
+      "priority": true,
+      "keywords": ["btc", "bitcoin"],
+      "onchain": { "network": "bitcoin", "check_congestion": true, "threshold_unconfirmed": 50000 },
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [{"level": -10.0, "msg": "BTC DIP!", "action": "BUY"}],
+        "spikes": [{"level": 15.0, "msg": "BTC PUMP!", "action": "MONITOR"}]
+      }
+    }
+  },
+  "sources": {
+    "youtube": [],
+    "x_accounts": [
+      {"name": "Sample Alpha", "handle": "crypto_alpha", "priority": true}
+    ],
+    "nitter_instances": [
+      "https://nitter.poast.org"
+    ],
+    "rss_feeds": [],
+    "telegram_rss": []
+  },
+  "ai_prompts": {
+    "local": "Trader mode: Analyze this: '{text}'. Use Indonesian.",
+    "online": "Senior analyst mode: Verify this: '{text}'. Use Indonesian."
+  }
+}
