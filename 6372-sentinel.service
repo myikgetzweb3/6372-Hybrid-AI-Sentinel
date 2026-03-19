@@ -1,0 +1,16 @@
+[Unit]
+Description=6372-Hybrid-AI-Sentinel Intelligence Engine
+After=network.target
+
+[Service]
+Type=simple
+User=myikgetzweb3
+WorkingDirectory=/home/myikgetzweb3/6372-hybrid-ai-sentinel
+ExecStart=/usr/bin/python3 /home/myikgetzweb3/6372-hybrid-ai-sentinel/src/main.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/myikgetzweb3/6372-hybrid-ai-sentinel/activity.log
+StandardError=append:/home/myikgetzweb3/6372-hybrid-ai-sentinel/activity.log
+
+[Install]
+WantedBy=multi-user.target

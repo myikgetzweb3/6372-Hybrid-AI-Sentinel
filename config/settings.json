@@ -1,0 +1,372 @@
+{
+  "user_strategy": {
+    "type": "DCA",
+    "interval": "monthly",
+    "execution_day": 1,
+    "execution_time": "09:00",
+    "reminder_msg": "Waktunya melakukan pembelian rutin bulanan (DCA)!"
+  },
+  "assets": {
+    "BTC": {
+      "symbol": "BTCUSDT",
+      "emoji": "\u20bf ",
+      "priority": true,
+      "keywords": [
+        "btc",
+        "bitcoin",
+        "halving",
+        "etf"
+      ],
+      "onchain": {
+        "network": "bitcoin",
+        "check_congestion": true,
+        "threshold_unconfirmed": 50000
+      },
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -20.0,
+            "msg": "\ud83d\udea8 BTC CRASH!",
+            "action": "BELI 100% Dana Cadangan"
+          },
+          {
+            "level": -12.0,
+            "msg": "\ud83d\udcc9 BTC DIP DALAM!",
+            "action": "BELI 50% Dana Cadangan"
+          },
+          {
+            "level": -7.0,
+            "msg": "\ud83d\udcc9 BTC DIP MODERAT!",
+            "action": "BELI 25% Dana Cadangan"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 35.0,
+            "msg": "\ud83d\ude80 BTC MOONSHOT!",
+            "action": "JUAL 50% Aset"
+          },
+          {
+            "level": 20.0,
+            "msg": "\ud83d\udd25 BTC RELI KUAT!",
+            "action": "JUAL 25% Aset"
+          },
+          {
+            "level": 12.0,
+            "msg": "\ud83d\udcc8 BTC RELI NORMAL!",
+            "action": "JUAL 10% Aset"
+          }
+        ]
+      }
+    },
+    "ETH": {
+      "symbol": "ETHUSDT",
+      "emoji": "\ud83d\udc8e",
+      "onchain": null,
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -20.0,
+            "msg": "\ud83d\udea8 ETH MAJOR DIP!",
+            "action": "BELI 30% Dana"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 30.0,
+            "msg": "\ud83d\ude80 ETH MOONSHOT!",
+            "action": "JUAL 30% Aset"
+          }
+        ]
+      }
+    },
+    "SOL": {
+      "symbol": "SOLUSDT",
+      "emoji": "\u2600\ufe0f",
+      "onchain": null,
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -25.0,
+            "msg": "\ud83d\udea8 SOL MAJOR DIP!",
+            "action": "BELI 40% Dana"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 40.0,
+            "msg": "\ud83d\ude80 SOL MOONSHOT!",
+            "action": "JUAL 40% Aset"
+          }
+        ]
+      }
+    },
+    "DOGE": {
+      "symbol": "DOGEUSDT",
+      "emoji": "\ud83d\udc15",
+      "onchain": null,
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -30.0,
+            "msg": "\ud83d\udea8 DOGE DIP!",
+            "action": "BELI 30% Dana"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 50.0,
+            "msg": "\ud83d\ude80 DOGE PUMP!",
+            "action": "JUAL 40% Aset"
+          }
+        ]
+      }
+    },
+    "HYPE": {
+      "symbol": "HYPEUSDT",
+      "emoji": "\u26a1",
+      "onchain": null,
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -40.0,
+            "msg": "\ud83d\udea8 HYPE MAJOR CRASH!",
+            "action": "BELI 40% Dana"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 70.0,
+            "msg": "\ud83d\ude80 HYPE MOONSHOT!",
+            "action": "JUAL 50% Aset"
+          }
+        ]
+      }
+    },
+    "FART": {
+      "symbol": "FART",
+      "emoji": "\ud83d\udca8",
+      "onchain": null,
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -50.0,
+            "msg": "\ud83d\udea8 FART DUMP!",
+            "action": "BELI CICIL"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 100.0,
+            "msg": "\ud83d\ude80 FART PUMP!",
+            "action": "AMBIL PROFIT"
+          }
+        ]
+      },
+      "dex": {
+        "network": "solana",
+        "address": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
+      }
+    },
+    "KAITO": {
+      "symbol": "KAITO",
+      "emoji": "\ud83e\udd16",
+      "onchain": {
+        "network": "base"
+      },
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -35.0,
+            "msg": "\ud83d\udcc9 KAITO DIP!",
+            "action": "BELI CICIL"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 60.0,
+            "msg": "\ud83d\ude80 KAITO PUMP!",
+            "action": "JUAL 25% Aset"
+          }
+        ]
+      },
+      "dex": {
+        "network": "base",
+        "address": "0x98d0baa52b2D063E780DE12F615f963Fe8537553"
+      }
+    },
+    "QUACK": {
+      "symbol": "QUACK",
+      "emoji": "\ud83e\udd86",
+      "onchain": null,
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -60.0,
+            "msg": "\ud83d\udea8 QUACK DIP!",
+            "action": "BELI 30% Dana"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 150.0,
+            "msg": "\ud83d\ude80 QUACK MOONSHOT!",
+            "action": "JUAL 90% Aset"
+          }
+        ]
+      },
+      "dex": {
+        "network": "ethereum",
+        "address": "0xc07e1300dc138601fa6b0b59f8d0fa477e690589"
+      }
+    },
+    "FHE": {
+      "symbol": "FHE",
+      "emoji": "\ud83e\udde0",
+      "onchain": null,
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -25.0,
+            "msg": "\ud83d\udcc9 FHE DIP!",
+            "action": "TAMBAH MUATAN"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 40.0,
+            "msg": "\ud83d\ude80 FHE PUMP!",
+            "action": "JUAL 40% Aset"
+          }
+        ]
+      },
+      "dex": {
+        "network": "ethereum",
+        "address": "0xd55C9fB62E176a8Eb6968f32958FeFDD0962727E"
+      }
+    },
+    "EDGEN": {
+      "symbol": "EDGEN",
+      "emoji": "\ud83e\uddec",
+      "onchain": null,
+      "thresholds": {
+        "hourly": 1.0,
+        "dips": [
+          {
+            "level": -30.0,
+            "msg": "\ud83d\udcc9 EDGEN DIP!",
+            "action": "BELI 30% Dana"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 50.0,
+            "msg": "\ud83d\ude80 EDGEN PUMP!",
+            "action": "JUAL 40% Aset"
+          }
+        ]
+      },
+      "dex": {
+        "network": "bsc",
+        "address": "0x0c808f0464c423d5ea4f4454fcc23b6e2ae75562"
+      }
+    },
+    "MOODENG": {
+      "symbol": "MOODENG",
+      "emoji": "\ud83e\udd9b",
+      "priority": true,
+      "keywords": [
+        "moodeng",
+        "solana",
+        "meme",
+        "hippo"
+      ],
+      "onchain": {
+        "network": "solana",
+        "address": "ED5nyyWEzpPPiWimP8vYm7sD7TD3LAt3Q3gRTWHzPJBY",
+        "whale_threshold_usd": 5000.0
+      },
+      "thresholds": {
+        "hourly": 5.0,
+        "dips": [
+          {
+            "level": -60.0,
+            "msg": "\ud83d\udc80 MOODENG EXTREME DUMP!",
+            "action": "BELI 100% Dana Cadangan"
+          },
+          {
+            "level": -40.0,
+            "msg": "\ud83d\udea8 MOODENG MAJOR DIP!",
+            "action": "BELI 30-50% Dana Cadangan"
+          },
+          {
+            "level": -20.0,
+            "msg": "\ud83d\udcc9 MOODENG DIP NORMAL!",
+            "action": "BELI 10-20% Dana Cadangan"
+          }
+        ],
+        "spikes": [
+          {
+            "level": 200.0,
+            "msg": "\ud83d\udef8 MOODENG TO THE MOON!",
+            "action": "JUAL 90% Aset"
+          },
+          {
+            "level": 100.0,
+            "msg": "\ud83d\udc8e MOODENG JACKPOT!",
+            "action": "JUAL 75% Aset"
+          },
+          {
+            "level": 40.0,
+            "msg": "\ud83d\ude80 MOODENG PUMP TAJAM!",
+            "action": "JUAL 50% Aset"
+          }
+        ]
+      },
+      "dex": {
+        "network": "solana",
+        "address": "ED5nyyWEzpPPiWimP8vYm7sD7TD3LAt3Q3gRTWHzPJBY"
+      }
+    }
+  },
+  "sources": {
+    "youtube": [
+      {
+        "name": "EliZ Alpha",
+        "channel_id": "UC8P0dc0Zn2gf8L6tJi_k6xg",
+        "priority": true
+      }
+    ],
+    "x_accounts": [
+      {
+        "name": "EliZ Alpha",
+        "handle": "eliz883",
+        "priority": true
+      }
+    ],
+    "nitter_instances": [
+      "https://nitter.net",
+      "https://nitter.privacydev.net",
+      "https://rsshub.app/twitter/user/"
+    ],
+    "rss_feeds": [
+      "https://cointelegraph.com/rss",
+      "https://www.coindesk.com/arc/outboundfeeds/rss/"
+    ],
+    "telegram_rss": []
+  },
+  "ai_prompts": {
+    "local": "Trader professional mode: Analisis input ini (Market/Social/On-chain): '{text}'. Jika ini Whale/Volume On-chain, berikan instruksi beli/jual/pantau yang SPONTAN. Gunakan Bahasa Indonesia.",
+    "online": "Sebagai analis market senior, verifikasi data/berita ini: '{text}'. Berdasarkan data on-chain atau berita global terbaru, apakah ini Sinyal Valid atau FUD? Berikan 1 kalimat tegas dalam Bahasa Indonesia."
+  },
+  "app_language": "id"
+}
