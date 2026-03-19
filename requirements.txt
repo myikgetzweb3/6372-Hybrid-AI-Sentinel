@@ -7,3 +7,5 @@ feedparser
 websocket-client
 google-generativeai
 urllib3
+httpx
+pytest

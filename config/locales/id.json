@@ -14,5 +14,9 @@
   "quick_nav": "NAVIGASI CEPAT",
   "command_label": "PERINTAH",
   "press_key_cmd": "Tekan [/] untuk Perintah",
-  "exit_msg": "Menutup 6372 Sentinel..."
+  "exit_msg": "Menutup 6372 Sentinel...",
+  "pnl_summary": "PnL Simulasi",
+  "subsystem_health": "Kesehatan Subsistem",
+  "backup_interval": "Interval Backup",
+  "gemini_limit": "Batas Kuota Gemini"
 }

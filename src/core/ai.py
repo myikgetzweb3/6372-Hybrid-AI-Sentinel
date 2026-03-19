@@ -1,8 +1,8 @@
 import threading
 import time
+import asyncio
 import utils
 from core.database import SupremeDatabase
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- DEVELOPER INFO ---
 # Author: myikgetzweb3
@@ -15,22 +15,27 @@ class IntelligenceSentinel:
         self.running = True
 
     def start(self):
-        threading.Thread(target=self._news_loop, daemon=True).start()
+        # Synchronous entry point if needed
+        pass
 
-    def _news_loop(self):
+    async def start_async(self):
+        await self._news_loop()
+
+    async def _news_loop(self):
         while self.running:
+            self.db.update_heartbeat("AI")
             try:
                 sources = self.config.get("sources", {})
                 # 1. Process EliZ & Socials
-                self._process_x_accounts(sources)
-                self._process_youtube_channels(sources)
+                await self._process_x_accounts(sources)
+                await self._process_youtube_channels(sources)
                 # 2. Process Trusted RSS (for MOODENG)
-                self._process_generic_rss(sources)
+                await self._process_generic_rss(sources)
             except Exception as e:
                 utils.logger.error(f"News Loop Error: {e}")
-            time.sleep(300) # Check every 5 minutes
+            await asyncio.sleep(300) # Check every 5 minutes
 
-    def _process_x_accounts(self, sources):
+    async def _process_x_accounts(self, sources):
         instances = sources.get("nitter_instances", ["https://nitter.net"])
         rsshub_instances = ["https://rsshub.app", "https://rsshub.moeyy.cn"]
         for acc in sources.get("x_accounts", []):
@@ -38,34 +43,37 @@ class IntelligenceSentinel:
             if not handle: continue
             urls = [f"{nitter}/{handle}/rss" for nitter in instances[:2]]
             urls += [f"{hub}/twitter/user/{handle}" for hub in rsshub_instances]
-            self._fetch_and_analyze(urls, source_type="X")
+            await self._fetch_and_analyze(urls, source_type="X")
 
-    def _process_youtube_channels(self, sources):
+    async def _process_youtube_channels(self, sources):
         for ch in sources.get("youtube", []):
             c_id = ch.get("channel_id")
             if c_id:
                 url = f"https://www.youtube.com/feeds/videos.xml?channel_id={c_id}"
-                self._fetch_and_analyze([url], source_type="YT")
+                await self._fetch_and_analyze([url], source_type="YT")
 
-    def _process_generic_rss(self, sources):
+    async def _process_generic_rss(self, sources):
         for url in sources.get("rss_feeds", []):
-            self._fetch_and_analyze([url], source_type="RSS")
+            await self._fetch_and_analyze([url], source_type="RSS")
 
-    def _fetch_and_analyze(self, urls, source_type):
+    async def _fetch_and_analyze(self, urls, source_type):
+        tasks = [utils.fetch_rss_async(url) for url in urls]
+        # We process as soon as we get results from ANY source for a specific account/feed
+        results = await asyncio.gather(*tasks)
+        
         all_entries = []
-        with ThreadPoolExecutor(max_workers=len(urls)) as executor:
-            futures = {executor.submit(utils.fetch_rss, url): url for url in urls}
-            for future in as_completed(futures):
-                res = future.result()
-                if res: 
-                    all_entries.extend(res)
-                    break 
+        for res in results:
+            if res:
+                all_entries.extend(res)
+                break # Found valid RSS for this source set, move on
 
         for entry in all_entries:
             link = entry.get('link')
             if link and not self.db.is_already_seen(link):
-                self._analyze_signal(entry.get('title', ''), link, source_type)
+                # Mark as seen IMMEDIATELY to prevent double processing while AI is thinking
                 self.db.mark_as_seen(link)
+                # Run analysis in a thread to keep the async event loop moving
+                threading.Thread(target=self._analyze_signal, args=(entry.get('title', ''), link, source_type), daemon=True).start()
 
     def _analyze_signal(self, title, link, source_type, is_whale_event=False):
         # 1. Precise Detection

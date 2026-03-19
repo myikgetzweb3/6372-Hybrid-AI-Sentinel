@@ -14,5 +14,9 @@
   "quick_nav": "QUICK NAV",
   "command_label": "COMMAND",
   "press_key_cmd": "Press [/] for Commands",
-  "exit_msg": "Closing 6372 Sentinel..."
+  "exit_msg": "Closing 6372 Sentinel...",
+  "pnl_summary": "Simulated PnL",
+  "subsystem_health": "Subsystem Health",
+  "backup_interval": "Backup Interval",
+  "gemini_limit": "Gemini Quota Limit"
 }

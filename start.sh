@@ -1,50 +1,44 @@
 #!/bin/bash
 
-# --- 🛡️ 6372 HYBRID AI SENTINEL: Supreme Process Guardian ---
+# --- 🛡️ 6372 HYBRID AI SENTINEL: Professional Startup v5 ---
 # Author: myikgetzweb3
 
 PROJ_DIR="/home/myikgetzweb3/6372-hybrid-ai-sentinel"
+PID_FILE="$PROJ_DIR/sentinel.pid"
+G_PID_FILE="$PROJ_DIR/guardian.pid"
 LOG_FILE="$PROJ_DIR/activity.log"
-MAIN_SCRIPT="$PROJ_DIR/src/main.py"
 
-CYAN='\033[96m'
-BOLD='\033[1m'
-NC='\033[0m'
-GREEN='\033[0;32m'
+echo -e "\033[96m🛡️  6372 Guardian: Booting system...\033[0m"
 
-# Clear screen for fresh startup
-clear
-sleep 0.1
-
-echo -e "${CYAN}${BOLD}🛡️  6372 Guardian: Mengaktifkan Protokol Penjagaan...${NC}"
-echo -e "\033[2m      Developed by myikgetzweb3${NC}\n"
-
-# 1. TOTAL CLEANUP: Matikan SEMUA monitor DAN guardian lama
-echo -e "${DIM}Cleaning up old processes...${NC}"
-pkill -f "$MAIN_SCRIPT" 2>/dev/null
-pkill -f "while true; do.*$MAIN_SCRIPT" 2>/dev/null
+# 1. Clean shutdown
+bash "$PROJ_DIR/stop.sh"
+rm -f "$PID_FILE" "$G_PID_FILE"
 sleep 2
 
-# 2. Guardian Loop (Nohup Background with Robust Detection)
+# 2. Start Guardian
 nohup bash -c "
-while true; do 
-    # Log Rotation (Max ~10MB)
-    if [ -f \"$LOG_FILE\" ]; then
-        FILESIZE=\$(stat -c%s \"$LOG_FILE\")
-        if [ \$FILESIZE -ge 10485760 ]; then
-            mv \"$LOG_FILE\" \"$LOG_FILE.old\"
-            echo \"\$(date) [GUARDIAN] Log rotated.\" > \"$LOG_FILE\"
+echo \$\$ > '$G_PID_FILE'
+export PYTHONPATH=\$PYTHONPATH:$PROJ_DIR/src
+cd $PROJ_DIR
+while true; do
+    RUNNING=false
+    if [ -f '$PID_FILE' ]; then
+        MPID=\$(cat '$PID_FILE')
+        if [ ! -z \"\$MPID\" ] && ps -p \$MPID > /dev/null; then
+            RUNNING=true
         fi
     fi
 
-    # Pengecekan Presisi: Hanya cari proses PYTHON yang menjalankan script kita
-    if ! pgrep -f \"python3 $MAIN_SCRIPT\" > /dev/null; then 
-        echo \"\$(date) [GUARDIAN] Sentinel Down. Engaging Auto-Recovery...\" >> \"$LOG_FILE\"
-        python3 \"$MAIN_SCRIPT\" >> \"$LOG_FILE\" 2>&1
+    if [ \"\$RUNNING\" = false ]; then
+        echo \"\$(date) [RECOVERY] Starting Sentinel...\" >> '$LOG_FILE'
+        python3 src/main.py >> '$LOG_FILE' 2>&1 &
+        NEW_PID=\$!
+        echo \$NEW_PID > '$PID_FILE'
+        sleep 2
     fi
-    sleep 15
+    sleep 5
 done
 " > /dev/null 2>&1 &
 
-echo -e "✅ ${GREEN}6372 Supreme Protocol ACTIVE.${NC}"
-echo -e "${BOLD}💡 NAVIGASI:${NC} ${CYAN}6372-status${NC} | ${CYAN}6372-config${NC}"
+echo -e "\033[92m✅ 6372 Supreme Protocol ACTIVE.\033[0m"
+echo -e "💡 Dashboard: \033[96m6372-status\033[0m"
