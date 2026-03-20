@@ -1,10 +1,11 @@
-# 🛡️ 6372-Hybrid-AI-Sentinel v2.3
+# 🛡️ 6372-Hybrid-AI-Sentinel v2.3 (Supreme Edition)
 
 Advanced Hybrid AI Surveillance Engine for Crypto Assets. Built for 2026 standards with Asyncio, Dual-Brain Intelligence, and Autonomous Discovery.
 
-## 🚀 Key Features
+## 🚀 Key Features (Supreme Protocol)
+*   **Supreme Secret Weapon (Advanced Momentum Detector)**: A highly responsive hourly price monitoring protocol. Detects every spike or dip ≥ 1% in real-time based on the last notified point (Delta Logic).
 *   **Dual-Brain Intelligence**: Combines **Ollama (TinyLlama)** for fast local heuristics and **Gemini 3.1 Flash** for deep strategic verification.
-*   **Autonomous Smart Onboarding**: Just add an asset name; the AI automatically discovers its blockchain network, official Twitter/X handle, and relevant intelligence keywords.
+*   **Autonomous Smart Onboarding**: Simply add an asset name; the AI automatically discovers its blockchain network, official Twitter/X handle, and relevant intelligence keywords.
 *   **Real-time Surveillance**: 
     *   **Binance WebSocket**: Sub-second price tracking for major assets (BTC, ETH, SOL, etc.).
     *   **Universal DEX Polling**: High-frequency monitoring for emerging tokens (DexScreener API).

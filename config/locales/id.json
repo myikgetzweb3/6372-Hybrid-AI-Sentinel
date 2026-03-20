@@ -40,5 +40,7 @@
   "wiz_del_asset": "Hapus Aset",
   "wiz_analyzing": "Sentinel AI sedang menganalisis aset",
   "wiz_done": "Konfigurasi berhasil diperbarui",
-  "wiz_select": "PILIH OPSI"
+  "wiz_select": "PILIH OPSI",
+  "up": "Naik",
+  "down": "Turun"
 }

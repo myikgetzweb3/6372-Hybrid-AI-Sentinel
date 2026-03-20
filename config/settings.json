@@ -292,7 +292,7 @@
         "whale_threshold_usd": 5000.0
       },
       "thresholds": {
-        "hourly": 5.0,
+        "hourly": 1.0,
         "dips": [
           {
             "level": -60.0,

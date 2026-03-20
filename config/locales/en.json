@@ -40,5 +40,7 @@
   "wiz_del_asset": "Remove Asset",
   "wiz_analyzing": "Sentinel AI is analyzing asset",
   "wiz_done": "Configuration updated successfully",
-  "wiz_select": "SELECT OPTION"
+  "wiz_select": "SELECT OPTION",
+  "up": "Up",
+  "down": "Down"
 }

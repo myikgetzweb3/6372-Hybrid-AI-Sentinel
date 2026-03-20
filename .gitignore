@@ -21,6 +21,8 @@ backup_log.txt
 
 # Process Files
 *.pid
+state.json
+firebase-debug.log
 
 # System/IDE
 .vscode/

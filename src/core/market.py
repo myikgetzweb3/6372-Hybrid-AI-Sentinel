@@ -20,6 +20,7 @@ class MarketSentinel:
         self.alert_sound = utils.get_env("SOUND_ALERT_PATH", None)
         self.state_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "state.json")
         self.last_history_sync = {}
+        self.last_notified_diffs = {}
 
     def _should_record_history(self, asset):
         now = time.time()
@@ -42,19 +43,29 @@ class MarketSentinel:
     def _check_alerts(self, asset, price, diff_24h):
         # Always sync state.json for external tools
         if asset == "BTC": self.db.sync_state_json()
-        
+
         asset_cfg = self.config.get("assets", {}).get(asset, {})
         thresholds = asset_cfg.get("thresholds", {})
         prev = self.db.get_asset_state(asset)
         prev_tier = prev.get("tier")
-        
-        # 1. Hourly Momentum (Informational Log)
+
+        # 1. Hourly Momentum (Delta Real-time Logic)
         p_1h = self.db.get_price_one_hour_ago(asset)
         if p_1h and p_1h > 0:
             diff_1h = ((price - p_1h) / p_1h) * 100
-            if abs(diff_1h) >= thresholds.get("hourly", 1.0):
-                utils.logger.info(f"Hourly Movement: {asset} {diff_1h:+.2f}%")
+            last_diff = self.last_notified_diffs.get(asset, 0.0)
+            delta = diff_1h - last_diff
 
+            h_threshold = thresholds.get("hourly", 1.0)
+            if abs(delta) >= h_threshold:
+                utils.logger.info(f"Hourly Movement: {asset} {diff_1h:+.2f}% (Delta: {delta:+.2f}%)")
+
+                emoji = "🟢" if delta > 0 else "🔴"
+                direction = utils.get_locale("up") if delta > 0 else utils.get_locale("down")
+                title = f"{emoji} {asset} {direction} {abs(delta):.2f}%"
+                body = f"${price:,.4f}"
+                utils.send_notification(title, body, sound_path=self.alert_sound)
+                self.last_notified_diffs[asset] = diff_1h
         # 2. Alert & Tier Logic
         triggered_lvl = None
         
