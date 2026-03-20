@@ -150,21 +150,21 @@
     },
     "FART": {
       "symbol": "FART",
-      "emoji": "💨",
+      "emoji": "\ud83d\udca8",
       "onchain": null,
       "thresholds": {
         "hourly": 1.0,
         "dips": [
           {
             "level": -50.0,
-            "msg": "🚨 FART DUMP!",
+            "msg": "\ud83d\udea8 FART DUMP!",
             "action": "BELI CICIL"
           }
         ],
         "spikes": [
           {
             "level": 100.0,
-            "msg": "🚀 FART PUMP!",
+            "msg": "\ud83d\ude80 FART PUMP!",
             "action": "AMBIL PROFIT"
           }
         ]
@@ -355,8 +355,14 @@
       "https://rsshub.app/twitter/user/"
     ],
     "rss_feeds": [
-      {"name": "CoinTelegraph", "url": "https://cointelegraph.com/rss"},
-      {"name": "CoinDesk", "url": "https://www.coindesk.com/arc/outboundfeeds/rss/"}
+      {
+        "name": "CoinTelegraph",
+        "url": "https://cointelegraph.com/rss"
+      },
+      {
+        "name": "CoinDesk",
+        "url": "https://www.coindesk.com/arc/outboundfeeds/rss/"
+      }
     ],
     "telegram_rss": []
   },

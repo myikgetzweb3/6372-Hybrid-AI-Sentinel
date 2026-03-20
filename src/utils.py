@@ -89,7 +89,17 @@ def get_env(key, default, base_dir=BASE_DIR):
     return os.getenv(key, default)
 
 def get_text(key):
-    lang = get_env("APP_LANGUAGE", "id")
+    # 1. Try to get language from settings.json first (User Preference)
+    lang = "id"
+    cfg_path = os.path.join(BASE_DIR, "config/settings.json")
+    try:
+        if os.path.exists(cfg_path):
+            with open(cfg_path, 'r') as f:
+                lang = json.load(f).get("app_language", "id")
+    except:
+        # 2. Fallback to .env if settings.json fails
+        lang = get_env("APP_LANGUAGE", "id")
+    
     locale_path = os.path.join(BASE_DIR, f"config/locales/{lang}.json")
     try:
         if os.path.exists(locale_path):
