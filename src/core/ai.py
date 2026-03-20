@@ -118,22 +118,22 @@ class IntelligenceSentinel:
         if not should_process:
             return 
 
-        # 2. Local Analysis (Ollama) - SPONTANEOUS TACTICAL BRIEFING
-        role = f"analis {context} senior"
-        if is_technical_data:
-            role = f"spesialis On-chain {context}"
+        # 2. Local Analysis (Ollama) - TACTICAL DECODING
+        role = f"spesialis strategi {context}"
+        if is_eliz_source:
+            role = "Analis Dekoder EliZ (Logika Kondisional)"
         
-        prompt_local = f"TUGAS PRIORITAS: Anda adalah {role} yang sedang memantau data blockchain live. Berikan deskripsi SPONTAN, INSTRUKSI AKSI TAJAM, dan dampak harga untuk data ini: '{title}'. Jawab langsung ke poin, maksimal 2 kalimat."
+        prompt_local = self.config.get("ai_prompts", {}).get("local", "").replace("{text}", title)
         ollama_res = utils.call_ollama(prompt_local)
         
-        # 3. Synergy Check (Gemini) - STRATEGIC TRUTH VERIFICATION
+        # 3. Synergy Check (Gemini) - STRATEGIC RISK VERIFICATION
         gemini_res = ""
         daily_quota = self.db.get_quota()
         quota_limit = int(utils.get_env("GEMINI_QUOTA_LIMIT", "1500"))
 
         if daily_quota < quota_limit:
             utils.logger.info(f"AI SYNERGY TRIGGERED ({context}): {title[:40]}...")
-            prompt_online = f"URGENT {context}: Sebagai {role}, bedah secara teknis kejadian ini: {title}. Berikan deskripsi spontan tentang validitas dan potensi pergerakan pasar. Jawab 1 kalimat tegas."
+            prompt_online = self.config.get("ai_prompts", {}).get("online", "").replace("{text}", title)
             gemini_res = utils.call_gemini(prompt_online)
             self.db.increment_quota()
 

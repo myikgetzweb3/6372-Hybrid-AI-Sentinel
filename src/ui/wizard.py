@@ -95,15 +95,27 @@ def manage_sources():
         time.sleep(1)
 
 def manage_language():
-    config = load_config()
-    print_header("BAHASA ANTARMUKA")
-    print(f"   Bahasa saat ini: {YELLOW}{config.get('app_language', 'id').upper()}{RESET}")
-    print(f"\n   {THEME}[1]{RESET} Bahasa Indonesia")
-    print(f"   {THEME}[2]{RESET} English")
-    c = input(f"\n   {THEME}PILIH : {RESET}")
-    if c == "1": config["app_language"] = "id"
-    elif c == "2": config["app_language"] = "en"
-    save_config(config); print(f"{GREEN}   ✔ Bahasa diperbarui.{RESET}"); time.sleep(1)
+    while True:
+        config = load_config()
+        print_header("PENGATURAN BAHASA")
+        curr = config.get('app_language', 'id').upper()
+        print(f"   Bahasa Aktif: {YELLOW}{BOLD}{curr}{RESET}")
+        print(f"\n   {THEME}[1]{RESET} Bahasa Indonesia (ID)")
+        print(f"   {THEME}[2]{RESET} English (EN)")
+        print(f"   {THEME}[3]{RESET} Kembali")
+        
+        c = input(f"\n   {THEME}PILIH : {RESET}")
+        if c == "1":
+            config["app_language"] = "id"
+            save_config(config)
+            print(f"{GREEN}   ✔ Bahasa berhasil diubah ke Indonesia.{RESET}")
+            time.sleep(1)
+        elif c == "2":
+            config["app_language"] = "en"
+            save_config(config)
+            print(f"{GREEN}   ✔ Language successfully changed to English.{RESET}")
+            time.sleep(1)
+        elif c == "3": break
 
 def manage_ai_test():
     print_header("UJI KONEKTIVITAS AI")

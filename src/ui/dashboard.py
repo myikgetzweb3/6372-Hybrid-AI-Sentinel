@@ -189,11 +189,20 @@ def main_dashboard():
                 
                 if len(history) < 2: spark_color = DIM
 
-                # Trik Final: Pisahkan penulisan Emoji dan Teks
-                # Tulis Emoji di posisi X, lalu teks nama aset di posisi X + 4 secara paksa
+                # Trik Final: Paku posisi setiap kolom secara absolut
+                # start_x adalah titik mulai emoji
+                # start_x + 4  : Nama Aset
+                # start_x + 48 : Metadata Area
+                # start_x + 68 : Tier Status Area
+                # start_x + 82 : Trend (Sparkline) Area
+                
                 line_prefix = f"\033[{20+i};{start_x}H\033[K{emoji}"
-                line_content = f"\033[{20+i};{start_x+4}H{row_theme}{BOLD}{a:<8}{RESET} | {BOLD}{price:<18}{RESET} | {c24_color}{c24:>+7.2f}%{RESET} | {DIM}{meta:<18}{RESET} | {st_color}[{st_text:^10}]{RESET} | {spark_color}{spark}{RESET}"
-                sys.stdout.write(line_prefix + line_content + "\n")
+                line_name   = f"\033[{20+i};{start_x+4}H{row_theme}{BOLD}{a:<8}{RESET} | {BOLD}{price:<18}{RESET} | {c24_color}{c24:>+7.2f}%{RESET} |"
+                line_meta   = f"\033[{20+i};{start_x+48}H{DIM}{meta:<18}{RESET} |"
+                line_tier   = f"\033[{20+i};{start_x+68}H{st_color}[{st_text:^10}]{RESET} |"
+                line_trend  = f"\033[{20+i};{start_x+82}H{spark_color}{spark}{RESET}"
+                
+                sys.stdout.write(line_prefix + line_name + line_meta + line_tier + line_trend + "\n")
             
             # --- AI REGISTRY ---
             sys.stdout.write("\033[35;1H\033[K")

@@ -77,27 +77,38 @@ class SupremeDatabase:
                 now = datetime.now().isoformat()
                 cursor.execute('SELECT last_price, onchain_data FROM assets_state WHERE asset = ?', (asset,))
                 row = cursor.fetchone()
+                
                 if not row:
                     p_val = price if price is not None else 0
                     cursor.execute('''INSERT INTO assets_state (asset, last_price, last_tier, change_24h, onchain_data, last_update)
-                        VALUES (?, ?, ?, ?, ?, ?)''', (asset, p_val, None, change_24h or 0, json.dumps(onchain_data) if onchain_data else None, now))
+                        VALUES (?, ?, ?, ?, ?, ?)''', (asset, p_val, tier, change_24h or 0, json.dumps(onchain_data) if onchain_data else None, now))
                 else:
                     old_onchain = json.loads(row[1]) if row[1] else {}
                     fields = []; params = []
-                    if price is not None: fields.append("last_price = ?"); params.append(price)
                     
-                    # ALWAYS Update Tier (to allow recovery to STABIL/None)
+                    if price is not None:
+                        fields.append("last_price = ?"); params.append(price)
+                    
+                    # Always allow updating tier (even to None)
                     fields.append("last_tier = ?"); params.append(tier)
                     
-                    if change_24h is not None: fields.append("change_24h = ?"); params.append(change_24h)
-                    if onchain_data is not None: 
+                    if change_24h is not None:
+                        fields.append("change_24h = ?"); params.append(change_24h)
+                    
+                    if onchain_data is not None:
                         old_onchain.update(onchain_data)
                         fields.append("onchain_data = ?"); params.append(json.dumps(old_onchain))
+                    
                     fields.append("last_update = ?"); params.append(now)
                     params.append(asset)
-                    cursor.execute(f"UPDATE assets_state SET {', '.join(fields)} WHERE asset = ?", tuple(params))
+                    
+                    if fields:
+                        sql = f"UPDATE assets_state SET {', '.join(fields)} WHERE asset = ?"
+                        cursor.execute(sql, tuple(params))
+                
                 conn.commit()
             except Exception as e:
+                if conn: conn.rollback()
                 utils.logger.error(f"DB Update Error ({asset}): {e}")
             finally:
                 if conn: conn.close()

@@ -168,15 +168,15 @@ class MarketSentinel:
                             "m5_activity": {"buys": buys, "sells": sells},
                             "sentiment": sentiment,
                             "timestamp": time.time()
-                        })
+                        }, change_24h=data.get("change_24h", 0))
                         
                         # Update DB with REAL change_24h from DEX
                         if dex:
-                            self.db.update_asset(name, data["price_usd"], change_24h=data["change_24h"])
-                            self._check_alerts(name, data["price_usd"], data["change_24h"])
+                            self.db.update_asset(name, data["price_usd"], change_24h=data.get("change_24h", 0))
+                            self._check_alerts(name, data["price_usd"], data.get("change_24h", 0))
                             if self._should_record_history(name):
                                 self.db.record_price_history(name, data["price_usd"])
                     await asyncio.sleep(0.5)
             except Exception as e:
                 utils.logger.error(f"DEX Loop Error: {e}")
-            await asyncio.sleep(15)
+            await asyncio.sleep(10) # Lebih agresif (10 detik) untuk koin DEX

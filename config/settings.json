@@ -150,28 +150,24 @@
     },
     "FART": {
       "symbol": "FART",
-      "emoji": "\ud83d\udca8",
+      "emoji": "💨",
       "onchain": null,
       "thresholds": {
         "hourly": 1.0,
         "dips": [
           {
             "level": -50.0,
-            "msg": "\ud83d\udea8 FART DUMP!",
+            "msg": "🚨 FART DUMP!",
             "action": "BELI CICIL"
           }
         ],
         "spikes": [
           {
             "level": 100.0,
-            "msg": "\ud83d\ude80 FART PUMP!",
+            "msg": "🚀 FART PUMP!",
             "action": "AMBIL PROFIT"
           }
         ]
-      },
-      "dex": {
-        "network": "solana",
-        "address": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
       }
     },
     "KAITO": {
@@ -365,8 +361,8 @@
     "telegram_rss": []
   },
   "ai_prompts": {
-    "local": "Trader professional mode: Analisis input ini (Market/Social/On-chain): '{text}'. Jika ini Whale/Volume On-chain, berikan instruksi beli/jual/pantau yang SPONTAN. Gunakan Bahasa Indonesia.",
-    "online": "Sebagai analis market senior, verifikasi data/berita ini: '{text}'. Berdasarkan data on-chain atau berita global terbaru, apakah ini Sinyal Valid atau FUD? Berikan 1 kalimat tegas dalam Bahasa Indonesia."
+    "local": "Mode Trader Taktis: Bedah logika IF-THEN dari post ini: '{text}'. Identifikasi: 1) Arah (Long/Short), 2) Zona Entry, 3) Titik Pembatalan (Invalidation/Stop). Jawab singkat & tajam, jelaskan apakah ini instruksi 'Eksekusi Sekarang' atau 'Tunggu Konfirmasi'. Gunakan Bahasa Indonesia.",
+    "online": "Anda adalah Senior Risk Strategist. Verifikasi validitas teknis dari post EliZ ini: '{text}'. Apakah logikanya masuk akal dengan kondisi market saat ini? Analisis risiko jika 'Stop' tercapai dan ke mana arah harga selanjutnya. Berikan 1-2 kalimat tegas dalam Bahasa Indonesia."
   },
   "app_language": "id"
 }
