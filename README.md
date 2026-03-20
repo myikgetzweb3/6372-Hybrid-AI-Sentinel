@@ -1,20 +1,16 @@
-# 🛡️ 6372-Hybrid-AI-Sentinel v2.0
+# 🛡️ 6372-Hybrid-AI-Sentinel v2.3
 
-Advanced Hybrid AI Surveillance Engine for Crypto Assets. Built for 2026 standards with Asyncio, Dual-Brain Intelligence, and Multi-chain On-chain Monitoring.
+Advanced Hybrid AI Surveillance Engine for Crypto Assets. Built for 2026 standards with Asyncio, Dual-Brain Intelligence, and Autonomous Discovery.
 
 ## 🚀 Key Features
 *   **Dual-Brain Intelligence**: Combines **Ollama (TinyLlama)** for fast local heuristics and **Gemini 3.1 Flash** for deep strategic verification.
+*   **Autonomous Smart Onboarding**: Just add an asset name; the AI automatically discovers its blockchain network, official Twitter/X handle, and relevant intelligence keywords.
 *   **Real-time Surveillance**: 
     *   **Binance WebSocket**: Sub-second price tracking for major assets (BTC, ETH, SOL, etc.).
     *   **Universal DEX Polling**: High-frequency monitoring for emerging tokens (DexScreener API).
-*   **Multi-chain On-chain Engine**: 
-    *   **Bitcoin**: Mempool congestion & Whale movement tracking.
-    *   **Solana**: Spontaneous volume burst detection.
-    *   **Base/ETH**: Real-time Gas (Gwei) monitoring.
-*   **Supreme TUI Dashboard**: A flicker-free, non-blocking terminal interface with:
-    *   Real-time Sparklines (Unicode Trend Charts).
-    *   Whale Sentiment Tracking (Buy/Sell Ratio).
-    *   Subsystem Heartbeat & Uptime Monitoring.
+*   **Integrated Tactical Inbox**: Clean, integrated analysis cards merging original news with AI strategic decoding.
+*   **Multi-chain On-chain Engine**: Precision tracking for Bitcoin (Mempool), Solana (Burst), and Base/ETH (Gas).
+*   **Supreme TUI Dashboard**: A flicker-free, non-blocking terminal interface with real-time Sparklines and Whale Sentiment Tracking.
 *   **Immortal Guardian v5**: Industrial-grade process management with auto-recovery and PID synchronization.
 
 ## 🛠️ Quick Start

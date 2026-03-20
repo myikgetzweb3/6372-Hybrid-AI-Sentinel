@@ -50,15 +50,69 @@ def manage_assets():
         
         c = input(f"\n   {THEME}PILIH OPSI : {RESET}")
         if c == "1":
-            name = input("   Nama Aset (misal: BTC): ").upper()
-            sym = input("   Symbol Binance (misal: BTCUSDT): ").upper()
-            if name and sym:
-                config["assets"][name] = {"symbol": sym, "emoji": "💰", "thresholds": {"hourly": 1.0, "dips": [], "spikes": []}}
-                save_config(config); print(f"{GREEN}   ✔ Berhasil ditambahkan.{RESET}")
+            name = input(f"   Nama Aset (misal: BTC): ").upper()
+            if not name: continue
+            
+            print(f"   {YELLOW}🔍 Sentinel AI sedang menganalisis aset '{name}'...{RESET}")
+            info = utils.discovery_ai_asset_info(name)
+            network = info.get("network", "unknown")
+            handle = info.get("handle", "")
+            
+            print(f"   {GREEN}✔ Analisis Selesai:{RESET} Jaringan: {network.upper()} | X: @{handle if handle else 'N/A'}")
+            
+            sym = input(f"   Symbol Binance (Kosongkan jika hanya koin DEX): ").upper()
+            addr = ""
+            if not sym or network != "bitcoin":
+                addr = input(f"   Alamat Kontrak (Address): ")
+
+            # Build Smart Config
+            asset_cfg = {
+                "symbol": sym if sym else name,
+                "emoji": "💰",
+                "priority": False,
+                "keywords": [name.lower(), network.lower()],
+                "onchain": {"network": network},
+                "thresholds": {"hourly": 1.0, "dips": [], "spikes": []}
+            }
+            if addr:
+                asset_cfg["dex"] = {"network": network, "address": addr}
+                asset_cfg["onchain"]["address"] = addr
+            
+            config["assets"][name] = asset_cfg
+            
+            # Smart Auto-Source: Add Twitter if found
+            if handle:
+                exists = any(x.get("handle") == handle for x in config["sources"]["x_accounts"])
+                if not exists:
+                    config["sources"]["x_accounts"].append({"name": f"{name} Official", "handle": handle, "priority": True})
+                    print(f"   {GREEN}✔ Akun X @{handle} otomatis ditambahkan ke pemantauan.{RESET}")
+
+            save_config(config)
+            print(f"{GREEN}   ✔ Aset '{name}' berhasil dikonfigurasi secara cerdas.{RESET}")
         elif c == "2":
             name = input("   Nama Aset yang akan dihapus: ").upper()
             if name in config["assets"]:
-                del config["assets"][name]; save_config(config); print(f"{GREEN}   ✔ Berhasil dihapus.{RESET}")
+                # 1. Identifikasi handle X koin ini (jika ada)
+                asset_handle = ""
+                # Kami mencari handle yang namanya mirip 'Koin Official'
+                for x in config["sources"]["x_accounts"]:
+                    if x.get("name") == f"{name} Official":
+                        asset_handle = x.get("handle")
+                        break
+                
+                # 2. Hapus Aset
+                del config["assets"][name]
+                
+                # 3. Smart Cleanup: Hapus X handle jika tidak digunakan koin lain
+                if asset_handle:
+                    # Cek koin lain yang mungkin menggunakan handle yang sama (jarang tapi mungkin)
+                    still_needed = any(asset_handle in str(cfg) for a, cfg in config["assets"].items())
+                    if not still_needed:
+                        config["sources"]["x_accounts"] = [x for x in config["sources"]["x_accounts"] if x.get("handle") != asset_handle]
+                        print(f"   {YELLOW}✔ Sumber data X @{asset_handle} juga dibersihkan.{RESET}")
+
+                save_config(config)
+                print(f"{GREEN}   ✔ Berhasil dihapus.{RESET}")
         elif c == "3": break
         time.sleep(1)
 

@@ -186,6 +186,17 @@ def call_gemini(prompt):
         logger.error(f"Gemini API Error: {e} - Falling back to Ollama.")
         return call_ollama(prompt)
 
+def discovery_ai_asset_info(asset_name):
+    """Smart Onboarding: AI searches for best metadata for a new asset"""
+    prompt = f"Identify the primary blockchain and official/most active Twitter handle for the crypto asset '{asset_name}'. Return ONLY a JSON object like: {{\"network\": \"solana/ethereum/base/bsc/bitcoin\", \"handle\": \"username\"}}"
+    res = call_gemini(prompt)
+    try:
+        # Extract JSON from potential AI chatter
+        match = re.search(r'\{.*\}', res.replace('\n', ''))
+        if match: return json.loads(match.group())
+    except: pass
+    return {"network": "unknown", "handle": ""}
+
 async def fetch_rss_async(url):
     try:
         async with httpx.AsyncClient(headers={'User-Agent': 'Mozilla/5.0'}, timeout=15) as client:

@@ -31,44 +31,96 @@ def get_quota_bar(count, limit=1500, width=30):
     c = GREEN if perc >= 50 else (YELLOW if perc >= 20 else RED)
     return f"{c}[{bar}] {rem}/{limit}{RESET}"
 
-def show_intel_inbox(db):
+def show_log_monitor():
+    """Halaman Monitor Log Real-time Tanpa Kedip & Hemat RAM"""
+    log_path = os.path.join(BASE_DIR, "activity.log")
+    utils.clear_terminal() 
     while True:
-        utils.clear_terminal()
-        tsize = shutil.get_terminal_size()
-        w, h = tsize.columns, tsize.lines
-        if h < 38:
-            print(f"\n\n{RED}{BOLD}⚠️  TERMINAL TERLALU KECIL ({h} baris){RESET}"); time.sleep(2); break
-
-        for line in utils.get_logo(): print(utils.center_line(f"{THEME}{BOLD}{line}{RESET}", w))
-        print(utils.center_line(f"{THEME}{BOLD}📥 TACTICAL INTEL INBOX{RESET}", w))
-
-        # Consistent Scope Header for Inbox
-        border = "━" * min(w-4, 75)
-        print(utils.center_line(f"{THEME}{border}{RESET}", w))
-        uptime = datetime.now() - START_TIME
-        sys.stdout.write(utils.center_line(f"{DIM}UPTIME: {str(uptime).split('.')[0]} | DATABASE: 📁 6372.db{RESET}", w) + "\n")
-        print(utils.center_line(f"{THEME}{border}{RESET}", w) + "\n")
-
-        archive = db.get_all_intel()
-
-        if not archive: print("\n" * 2 + utils.center_line(f"{DIM}(Inbox Kosong){RESET}", w))
-        else:
-            header = f"{BOLD}{'ID':<4} | {'WAKTU':<8} | {'SUMBER':<10} | {'JUDUL BERITA'}{RESET}"
-            print(utils.center_line(header, w))
-            print(utils.center_line(f"{DIM}{'━' * 80}{RESET}", w))
-            for r in archive[:15]: 
-                title = r['title'].replace("\n", " ")
-                line = f"{THEME}{r['id']: <4}{RESET} | {r['time_str']} | {YELLOW}{r['source']: <10}{RESET} | {title[:max(10, w-50)]}"
-                print(utils.center_line(line, w + 10))
+        w = utils.get_terminal_width()
+        sys.stdout.write("\033[H")
         
-        print("\n" + utils.center_line(f"{THEME}{'━' * 75}{RESET}", w))
-        print(utils.center_line(f"{BOLD}💡 AKSI:{RESET} [ID] Baca | q Kembali", w))
-        sys.stdout.write(utils.center_line(f"{YELLOW}⌨️  PILIH : {RESET}", w-10))
-        sys.stdout.flush()
+        buffer = ""
+        for line in utils.get_logo(): buffer += utils.center_line(f"{THEME}{BOLD}{line}{RESET}", w) + "\n"
+        buffer += utils.center_line(f"{THEME}{BOLD}🖥️  LIVE SYSTEM MONITOR (REAL-TIME LOGS){RESET}", w) + "\n"
+        buffer += utils.center_line(f"{THEME}{'━' * 75}{RESET}", w) + "\n"
+        
+        if os.path.exists(log_path):
+            try:
+                with open(log_path, 'rb') as f:
+                    # Lompat ke 4096 byte terakhir (hemat RAM)
+                    f.seek(0, os.SEEK_END)
+                    f_size = f.tell()
+                    offset = min(f_size, 4096)
+                    f.seek(f_size - offset)
+                    chunk = f.read().decode('utf-8', errors='ignore')
+                    # Ambil 25 baris terakhir dari potongan tersebut
+                    lines = chunk.splitlines()[-25:]
+                    if not lines:
+                        buffer += "\n" * 5 + utils.center_line(f"{DIM}Menunggu aktivitas mesin...{RESET}", w) + "\n"
+                    else:
+                        for l in lines:
+                            buffer += "\033[K" + utils.center_line(f"{DIM}{l.strip()}{RESET}", w + 20) + "\n"
+            except Exception as e:
+                buffer += f"\n{RED}Error reading logs: {e}{RESET}\n"
+        else:
+            buffer += "\n" * 5 + utils.center_line(f"{RED}File log tidak ditemukan.{RESET}", w) + "\n"
+            
+        buffer += "\n" + utils.center_line(f"{THEME}{'━' * 75}{RESET}", w) + "\n"
+        buffer += utils.center_line(f"{BOLD}💡 AKSI:{RESET} [q] Kembali ke Dashboard (RAM Optimized)", w) + "\n"
+        
+        sys.stdout.write(buffer); sys.stdout.flush()
+        char = utils.get_key_universal()
+        if char and char.lower() == 'q': break
+        time.sleep(2)
+
+def show_intel_inbox(db):
+    import textwrap
+    needs_redraw = True
+    while True:
+        if needs_redraw:
+            utils.clear_terminal()
+            tsize = shutil.get_terminal_size()
+            w, h = tsize.columns, tsize.lines
+            if h < 38:
+                print(f"\n\n{RED}{BOLD}⚠️  TERMINAL TERLALU KECIL ({h} baris){RESET}"); time.sleep(2); break
+                
+            for line in utils.get_logo(): print(utils.center_line(f"{THEME}{BOLD}{line}{RESET}", w))
+            print(utils.center_line(f"{THEME}{BOLD}📥 TACTICAL INTEL INBOX{RESET}", w))
+            
+            border = "━" * min(w-4, 75)
+            print(utils.center_line(f"{THEME}{border}{RESET}", w))
+            uptime = datetime.now() - START_TIME
+            sys.stdout.write(utils.center_line(f"{DIM}UPTIME: {str(uptime).split('.')[0]} | DATABASE: 📁 6372.db{RESET}", w) + "\n")
+            print(utils.center_line(f"{THEME}{border}{RESET}", w) + "\n")
+            
+            archive = db.get_all_intel()
+            if not archive: 
+                print("\n" * 2 + utils.center_line(f"{DIM}(Inbox Kosong){RESET}", w))
+            else:
+                for r in archive[:10]:
+                    time_tag = f"{DIM}[{r['time_str']}]{RESET}"
+                    source_tag = f"{YELLOW}{BOLD}{r['source']:<10}{RESET}"
+                    print(utils.center_line(f"{time_tag} {source_tag} {THEME}ID: {r['id']}{RESET}", w))
+                    
+                    title_wrapped = textwrap.wrap(f"{BOLD}BERITA:{RESET} {r['title']}", width=min(w-10, 85))
+                    for tw in title_wrapped: print(utils.center_line(tw, w))
+                    
+                    msg_body = r['message'].replace("INTEL VERIFIED:", f"{GREEN}{BOLD}VERIFIKASI INTEL:{RESET}")
+                    msg_wrapped = textwrap.wrap(f"{BOLD}ANALISIS AI:{RESET} {msg_body}", width=min(w-10, 85))
+                    for mw in msg_wrapped: print(utils.center_line(mw, w))
+                    print(utils.center_line(f"{DIM}{'─' * 60}{RESET}", w) + "\n")
+            
+            print(utils.center_line(f"{THEME}{border}{RESET}", w))
+            print(utils.center_line(f"{BOLD}💡 AKSI:{RESET} [ID] Detail | q Kembali | r Refresh", w))
+            sys.stdout.write(utils.center_line(f"{YELLOW}⌨️  PILIH : {RESET}", w-10))
+            sys.stdout.flush()
+            needs_redraw = False
         
         char = utils.get_key_universal()
         if not char: time.sleep(0.1); continue
         if char.lower() == 'q': break
+        if char.lower() == 'r': needs_redraw = True; continue
+        
         if char.isdigit():
             sys.stdout.write(char); sys.stdout.flush()
             remaining = sys.stdin.readline().strip()
@@ -78,31 +130,31 @@ def show_intel_inbox(db):
                 utils.clear_terminal()
                 print("\n" * 2)
                 for line in utils.get_logo(): print(utils.center_line(f"{THEME}{BOLD}{line}{RESET}", w))
-                print(utils.center_line(f"{THEME}{BOLD}📜 DETAIL INTELIJEN - ID #{choice}{RESET}", w))
+                print(utils.center_line(f"{THEME}{BOLD}📜 DOKUMEN INTELIJEN LENGKAP - ID #{choice}{RESET}", w))
                 print(utils.center_line(f"{DIM}Sumber: {report['source']} | Waktu: {report['time_str']}{RESET}", w))
-                print(utils.center_line(f"{THEME}{'━' * 75}{RESET}", w) + "\n")
-                import textwrap
-                wrapped = textwrap.wrap(report['message'], width=min(w-10, 85))
+                print(utils.center_line(f"{THEME}{border}{RESET}", w) + "\n")
+                full_content = f"BERITA ASLI:\n{report['title']}\n\nANALISIS STRATEGIS:\n{report['message']}"
+                wrapped = textwrap.wrap(full_content, width=min(w-10, 85), replace_whitespace=False)
                 for wl in wrapped: print(utils.center_line(wl, w))
-                print("\n" + utils.center_line(f"{THEME}{'━' * 75}{RESET}", w))
+                print("\n" + utils.center_line(f"{THEME}{border}{RESET}", w))
                 print(utils.center_line(f"{YELLOW}Tekan Enter untuk kembali...{RESET}", w))
                 sys.stdin.readline()
+                needs_redraw = True
 
 def print_static_ui(w, config):
     utils.clear_terminal()
     for line in utils.get_logo(): print(utils.center_line(f"{THEME}{BOLD}{line}{RESET}", w))
-    print(utils.center_line(f"{THEME}{BOLD}6372 HYBRID AI SENTINEL v2.0{RESET}", w))
+    print(utils.center_line(f"{THEME}{BOLD}6372 HYBRID AI SENTINEL v2.3{RESET}", w))
     print(utils.center_line(f"{DIM}{utils.get_brand_credit()}{RESET}", w) + "\n")
     
-    border = "━" * 85
+    border = "━" * min(w-4, 85)
     print(utils.center_line(f"{THEME}{border}{RESET}", w))
     print(utils.center_line(f"{THEME}━ SYSTEM SCOPE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}"[:len(border)], w))
     print("\n" * 2) 
     print(utils.center_line(f"{THEME}{border}{RESET}", w) + "\n")
     
     print(utils.center_line(f"{THEME}{BOLD}📈 MARKET RADAR (REAL-TIME STREAM){RESET}", w) + "\n")
-    # Sub-header with hard-coded positioning
-    header = f"  {'ASSET':<10} | {'PRICE':<18} | {'24H %':<10} | {'METADATA':<18} | {'TIER STATUS':<12} | {'TREND'}"
+    header = f"  {'ASSET':<12} | {'PRICE':<18} | {'24H %':<14} | {'METADATA':<18} | {'TIER STATUS'}"
     print(utils.center_line(f"{BOLD}{header}{RESET}", w))
     print(utils.center_line(f"{DIM}{'─' * 85}{RESET}", w))
     print("\n" * 12) 
@@ -139,22 +191,17 @@ def main_dashboard():
             hbs = db.get_heartbeats()
             pnl_total = db.get_paper_trade_stats()
             
-            # --- SCOPE ---
-            sys.stdout.write("\033[13;1H\033[K")
+            buffer = ""
             m_ok = f"{GREEN}⚡ ACTIVE{RESET}" if "MARKET" in hbs else f"{DIM}⚪ IDLE{RESET}"
             a_ok = f"{GREEN}✨ READY{RESET}" if "AI" in hbs else f"{DIM}⚪ IDLE{RESET}"
             time_now = datetime.now().strftime("%H:%M:%S")
-            sys.stdout.write(utils.center_line(f"STATUS: {'🟢 AKTIF' if pid else '🔴 NONAKTIF'} | PID: {pid if pid else '---'} | 🕒 {time_now} | 📡 MARKET: {m_ok} | 🧠 AI: {a_ok}", w) + "\n")
-            sys.stdout.write("\033[14;1H\033[K")
+            buffer += f"\033[13;1H\033[K" + utils.center_line(f"STATUS: {'🟢 AKTIF' if pid else '🔴 NONAKTIF'} | PID: {pid if pid else '---'} | 🕒 {time_now} | 📡 MARKET: {m_ok} | 🧠 AI: {a_ok}", w) + "\n"
             uptime = datetime.now() - START_TIME
-            uptime_str = str(uptime).split('.')[0] # Remove microseconds
-            sys.stdout.write(utils.center_line(f"{DIM}UPTIME: {uptime_str} | DB: 📁 6372.db | LOGS: 📁 activity.log{RESET}", w) + "\n")
+            buffer += f"\033[14;1H\033[K" + utils.center_line(f"{DIM}UPTIME: {str(uptime).split('.')[0]} | DATABASE: 📁 6372.db | LOGS: 📁 activity.log{RESET}", w) + "\n"
             
-            # --- MARKET RADAR (ABSOLUTE POSITIONING) ---
             sys.stdout.write("\033[20;1H")
             assets = config.get("assets", {})
-            start_x = max(0, (w - 85) // 2) # X coordinate for centering the 85-char block
-            
+            start_x = max(0, (w - 85) // 2)
             for i, (a, d) in enumerate(assets.items()):
                 data = db.get_asset_state(a)
                 row_theme = THEME if i % 2 == 0 else "\033[94m"
@@ -174,52 +221,34 @@ def main_dashboard():
                     elif "gas_gwei" in oc: meta = f"⛽ {oc['gas_gwei']}g"
                 
                 st_val = data.get("tier")
-                if st_val is None:
-                    st_text = "STABIL"; st_color = DIM
+                if st_val is None: st_text = "STABIL"; st_color = DIM
                 else:
-                    st_text = f"{st_val:+.2f}%"
-                    st_color = GREEN if st_val > 0 else (RED if st_val < 0 else YELLOW)
+                    st_text = f"{st_val:+.2f}%"; st_color = GREEN if st_val > 0 else (RED if st_val < 0 else YELLOW)
                 
-                # Logic Warna Sparkline (Sentiment Whale)
                 spark_color = THEME
-                if data.get("onchain"):
-                    sent = data["onchain"].get("sentiment")
+                if data.get("onchain") and "sentiment" in data["onchain"]:
+                    sent = data["onchain"]["sentiment"]
                     if sent == "whale_buy": spark_color = GREEN
                     elif sent == "whale_sell": spark_color = RED
-                
                 if len(history) < 2: spark_color = DIM
 
-                # Trik Final: Paku posisi setiap kolom secara absolut
-                # start_x adalah titik mulai emoji
-                # start_x + 4  : Nama Aset
-                # start_x + 48 : Metadata Area
-                # start_x + 68 : Tier Status Area
-                # start_x + 82 : Trend (Sparkline) Area
-                
-                line_prefix = f"\033[{20+i};{start_x}H\033[K{emoji}"
-                line_name   = f"\033[{20+i};{start_x+4}H{row_theme}{BOLD}{a:<8}{RESET} | {BOLD}{price:<18}{RESET} | {c24_color}{c24:>+7.2f}%{RESET} |"
-                line_meta   = f"\033[{20+i};{start_x+48}H{DIM}{meta:<18}{RESET} |"
-                line_tier   = f"\033[{20+i};{start_x+68}H{st_color}[{st_text:^10}]{RESET} |"
-                line_trend  = f"\033[{20+i};{start_x+82}H{spark_color}{spark}{RESET}"
-                
-                sys.stdout.write(line_prefix + line_name + line_meta + line_tier + line_trend + "\n")
-            
-            # --- AI REGISTRY ---
-            sys.stdout.write("\033[35;1H\033[K")
-            sys.stdout.write(utils.center_line(f"BRAINS: {GREEN}🌐 Gemini 3.1 Flash{RESET} | {YELLOW}🤖 Ollama TinyLlama{RESET}", w) + "\n")
-            sys.stdout.write("\033[36;1H\033[K")
-            sys.stdout.write(utils.center_line(f"QUOTA : {get_quota_bar(quota)}", w) + "\n")
-            sys.stdout.write("\033[37;1H\033[K")
+                row_y = 20 + i
+                buffer += f"\033[{row_y};{start_x}H\033[K{emoji}"
+                buffer += f"\033[{row_y};{start_x+4}H{row_theme}{BOLD}{a:<8}{RESET} | {BOLD}{price:<18}{RESET} | {c24_color}{c24:>+7.2f}%{RESET} |"
+                buffer += f"\033[{row_y};{start_x+48}H{DIM}{meta:<18}{RESET} |"
+                buffer += f"\033[{row_y};{start_x+68}H{st_color}[{st_text:^10}]{RESET} |"
+                buffer += f"\033[{row_y};{start_x+82}H{spark_color}{spark}{RESET}\n"
+
+            buffer += f"\033[35;1H\033[K" + utils.center_line(f"BRAINS: {GREEN}🌐 Gemini 3.1 Flash{RESET} | {YELLOW}🤖 Ollama TinyLlama{RESET}", w) + "\n"
+            buffer += f"\033[36;1H\033[K" + utils.center_line(f"QUOTA : {get_quota_bar(quota)}", w) + "\n"
             pnl_color = YELLOW if round(pnl_total, 2) == 0 else (GREEN if pnl_total > 0 else RED)
-            sys.stdout.write(utils.center_line(f"{BOLD}SIMULATED PnL: {pnl_color}{pnl_total:+.2f}%{RESET}", w) + "\n")
-            sys.stdout.write("\033[38;1H\033[K")
+            buffer += f"\033[37;1H\033[K" + utils.center_line(f"{BOLD}SIMULATED PnL: {pnl_color}{pnl_total:+.2f}%{RESET}", w) + "\n"
             sources = config.get('sources', {})
             inflow = f"{DIM}📡 INFLOW: {len(sources.get('x_accounts',[]))} X | {len(sources.get('youtube',[]))} YT | {len(sources.get('rss_feeds',[]))} RSS{RESET}"
-            sys.stdout.write(utils.center_line(inflow, w) + "\n")
-
-            # --- COMMAND PROMPT ---
-            sys.stdout.write("\033[41;1H\033[K" + f"   {BOLD}{THEME}❯{RESET} {BOLD}PERINTAH:{RESET} {cmd_buffer}")
-            sys.stdout.flush()
+            buffer += f"\033[38;1H\033[K" + utils.center_line(inflow, w) + "\n"
+            buffer += f"\033[41;1H\033[K" + f"   {BOLD}{THEME}❯{RESET} {BOLD}PERINTAH:{RESET} {cmd_buffer}"
+            
+            sys.stdout.write(buffer); sys.stdout.flush()
             last_ref = now
 
         char = utils.get_key_universal()
@@ -229,11 +258,12 @@ def main_dashboard():
                 cmd_buffer = ""
                 if cmd in ["/q", "/exit"]: break
                 if cmd in ["/i", "/intel"]: show_intel_inbox(db); print_static_ui(w, config); last_ref = 0
+                if cmd in ["/m", "/monitor"]: show_log_monitor(); print_static_ui(w, config); last_ref = 0
                 if cmd in ["/c", "/config"]: os.system(f"python3 {os.path.join(BASE_DIR, 'src/ui/wizard.py')}"); print_static_ui(w, config); last_ref = 0
                 if cmd in ["/r", "/restart"]: os.system(f"bash {os.path.join(BASE_DIR, 'stop.sh')} && bash {os.path.join(BASE_DIR, 'start.sh')}"); print_static_ui(w, config); last_ref = 0
             elif char in ["\x7f", "\x08"]: cmd_buffer = cmd_buffer[:-1]
             else: cmd_buffer += char
-            sys.stdout.write("\033[41;1H\033[K" + f"   {BOLD}{THEME}❯{RESET} {BOLD}PERINTAH:{RESET} {cmd_buffer}"); sys.stdout.flush()
+            sys.stdout.write(f"\033[41;1H\033[K   {BOLD}{THEME}❯{RESET} {BOLD}PERINTAH:{RESET} {cmd_buffer}"); sys.stdout.flush()
         time.sleep(0.02)
 
 if __name__ == "__main__":

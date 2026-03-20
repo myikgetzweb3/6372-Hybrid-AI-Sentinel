@@ -355,8 +355,8 @@
       "https://rsshub.app/twitter/user/"
     ],
     "rss_feeds": [
-      "https://cointelegraph.com/rss",
-      "https://www.coindesk.com/arc/outboundfeeds/rss/"
+      {"name": "CoinTelegraph", "url": "https://cointelegraph.com/rss"},
+      {"name": "CoinDesk", "url": "https://www.coindesk.com/arc/outboundfeeds/rss/"}
     ],
     "telegram_rss": []
   },
